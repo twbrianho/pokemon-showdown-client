@@ -1,1 +1,36 @@
-../../config/config.js
+/** @type {import('../play.pokemonshowdown.com/src/client-main').PSConfig} */
+var Config = Config || {};
+
+/* version */ Config.version = "2025.11.05.b";
+
+Config.bannedHosts = ['cool.jit.su', 'pokeball-nixonserver.rhcloud.com'];
+
+Config.whitelist = [
+	'wikipedia.org'
+
+	// The full list is maintained outside of this repository so changes to it
+	// don't clutter the commit log. Feel free to copy our list for your own
+	// purposes; it's here: https://play.pokemonshowdown.com/config/config.js
+
+	// If you would like to change our list, simply message Zarel on Smogon or
+	// Discord.
+];
+
+// `defaultserver` specifies the server to use when the domain name in the
+// address bar is `Config.routes.client`.
+Config.defaultserver = {
+	id: 'dnd',
+	protocol: 'http:',
+	host: '174-21-69-193.insecure.psim.us',
+	port: 8000,
+	httpport: 8000,
+	altport: 8000,
+	registered: true
+};
+
+Config.roomsFirstOpenScript = function () {
+};
+
+Config.customcolors = {
+	'zarel': 'aeo'
+};
