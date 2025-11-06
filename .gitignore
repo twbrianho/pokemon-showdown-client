@@ -2,8 +2,7 @@ node_modules/
 .DS_Store
 Thumbs.db
 npm-debug.log
-/config/
-!/config/config.js
+/config/testclient-key.js
 /vendor/
 /caches/
 
