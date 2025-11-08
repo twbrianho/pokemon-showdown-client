@@ -21,9 +21,9 @@ Config.whitelist = [
 Config.defaultserver = {
 	id: 'dnd',
 	host: 'pokemon-dnd.brianslho.info',
-	port: 8000,
+	port: 443,
 	httpport: 8000,
-	altport: 8000,
+	altport: 80,
 	registered: true
 };
 
