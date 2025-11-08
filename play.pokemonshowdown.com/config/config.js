@@ -20,8 +20,7 @@ Config.whitelist = [
 // address bar is `Config.routes.client`.
 Config.defaultserver = {
 	id: 'dnd',
-	protocol: 'http:',
-	host: '174-21-69-193.insecure.psim.us',
+	host: 'pokemon-dnd.brianslho.info',
 	port: 8000,
 	httpport: 8000,
 	altport: 8000,
