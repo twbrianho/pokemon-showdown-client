@@ -82,9 +82,12 @@ export class BattleBGM {
 			this.sound.currentTime -= (this.loopend - this.loopstart) / 1000;
 		}
 
-		this.timer = setTimeout(() => {
-			this.updateTime();
-		}, Math.max(this.loopend - progress, 1));
+		this.timer = setTimeout(
+			() => {
+				this.updateTime();
+			},
+			Math.max(this.loopend - progress, 1),
+		);
 	}
 
 	static update() {
@@ -101,7 +104,7 @@ export class BattleBGM {
 	}
 }
 
-export const BattleSound = new class {
+export const BattleSound = new (class {
 	soundCache: { [url: string]: HTMLAudioElement | undefined } = {};
 
 	bgm: BattleBGM[] = [];
@@ -115,8 +118,13 @@ export const BattleSound = new class {
 		if (!window.HTMLAudioElement) return;
 		if (this.soundCache[url]) return this.soundCache[url];
 		try {
-			const sound = document.createElement('audio');
-			sound.src = `https://${Config.routes.client}/${url}`;
+			let clientRoute = window.Config
+				? Config.routes.client
+				: "play.pokemonshowdown.com";
+			if (clientRoute === "pokemon-dnd-client.brianslho.info")
+				clientRoute = "play.pokemonshowdown.com";
+			const sound = document.createElement("audio");
+			sound.src = `https://${clientRoute}/${url}`;
 			sound.volume = this.effectVolume / 100;
 			this.soundCache[url] = sound;
 			return sound;
@@ -137,7 +145,12 @@ export const BattleSound = new class {
 	}
 
 	/** loopstart and loopend are in milliseconds */
-	loadBgm(url: string, loopstart: number, loopend: number, replaceBGM?: BattleBGM | null) {
+	loadBgm(
+		url: string,
+		loopstart: number,
+		loopend: number,
+		replaceBGM?: BattleBGM | null,
+	) {
 		if (replaceBGM) {
 			replaceBGM.stop();
 			this.deleteBgm(replaceBGM);
@@ -170,7 +183,7 @@ export const BattleSound = new class {
 
 	loudnessPercentToAmplitudePercent(loudnessPercent: number) {
 		// 10 dB is perceived as approximately twice as loud
-		let decibels = 10 * Math.log(loudnessPercent / 100) / Math.log(2);
+		let decibels = (10 * Math.log(loudnessPercent / 100)) / Math.log(2);
 		return 10 ** (decibels / 20) * 100;
 	}
 	setBgmVolume(bgmVolume: number) {
@@ -180,11 +193,16 @@ export const BattleSound = new class {
 	setEffectVolume(effectVolume: number) {
 		this.effectVolume = this.loudnessPercentToAmplitudePercent(effectVolume);
 	}
-};
+})();
 
-if (typeof PS === 'object') {
-	PS.prefs.subscribeAndRun(key => {
-		if (!key || key === 'musicvolume' || key === 'effectvolume' || key === 'mute') {
+if (typeof PS === "object") {
+	PS.prefs.subscribeAndRun((key) => {
+		if (
+			!key ||
+			key === "musicvolume" ||
+			key === "effectvolume" ||
+			key === "mute"
+		) {
 			BattleSound.effectVolume = PS.prefs.effectvolume;
 			BattleSound.bgmVolume = PS.prefs.musicvolume;
 			BattleSound.muted = PS.prefs.mute;

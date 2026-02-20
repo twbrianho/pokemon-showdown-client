@@ -991,14 +991,16 @@ function toId() {
 			Storage.whenAppLoaded.load(this);
 
 			// load custom colors from loginserver
-			$.get("/config/colors.json?" + Math.random(), {}, function (data) {
-				Object.assign(Config.customcolors, data);
-			});
+			$.get(
+				"https://play.pokemonshowdown.com/config/colors.json?" +
+					Math.random(),
+				{},
+				function (data) {
+					Object.assign(Config.customcolors, data);
+				},
+			);
 
-			// get coil values too
-			$.get("/config/coil.json?" + Math.random(), {}, function (data) {
-				Object.assign(LadderRoom.COIL_B, data);
-			});
+			// (Removed fetch for coil.json as it is blocked by CORS on custom domains and isn't needed)
 
 			this.initializeConnection();
 		},
