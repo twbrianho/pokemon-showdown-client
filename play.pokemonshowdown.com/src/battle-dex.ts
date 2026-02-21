@@ -689,12 +689,16 @@ export const Dex = new (class implements ModdedDex {
 		const species = Dex.species.get(pokemon);
 		// Gmax sprites are already extremely large, so we don't need to double.
 		if (species.name.endsWith("-Gmax")) isDynamax = false;
+		let prefix = Dex.resourcePrefix;
+		if (species.num < 0) {
+			prefix = "/";
+		}
 		let spriteData = {
 			gen: mechanicsGen,
 			w: 96,
 			h: 96,
 			y: 0,
-			url: Dex.resourcePrefix + "sprites/",
+			url: prefix + "sprites/",
 			pixelated: true,
 			isFrontSprite: false,
 			cryurl: "",
@@ -747,6 +751,16 @@ export const Dex = new (class implements ModdedDex {
 			miscData = BattlePokemonSprites[speciesid];
 		if (!miscData && window.BattlePokemonSpritesBW)
 			miscData = BattlePokemonSpritesBW[speciesid];
+
+		// Force custom Fakemon misc data to be valid
+		if (!miscData && species.num < 0) {
+			miscData = {
+				num: species.num,
+				front: { w: 96, h: 96 },
+				back: { w: 96, h: 96 },
+			};
+		}
+
 		if (!miscData) miscData = {};
 
 		if (miscData.num !== 0 && miscData.num > -5000) {
@@ -856,6 +870,11 @@ export const Dex = new (class implements ModdedDex {
 				name += "-f";
 			}
 
+			// Force local Fakemon test to pass
+			if (species.num < 0) {
+				name = species.spriteid;
+			}
+
 			spriteData.url += dir + "/" + name + ".png";
 		}
 
@@ -894,6 +913,10 @@ export const Dex = new (class implements ModdedDex {
 		} else if (window.BattlePokedex?.[id]?.num) {
 			num = BattlePokedex[id].num;
 		}
+
+		// Map custom Fakemon to the substitute doll (0) intentionally, rather than resetting unknown negative nums
+		if (Dex.species.get(id).num < 0) return 0;
+
 		if (num < 0) num = 0;
 		if (num > 1025) num = 0;
 
@@ -954,6 +977,11 @@ export const Dex = new (class implements ModdedDex {
 		let fainted = (pokemon as Pokemon | ServerPokemon)?.fainted
 			? `;opacity:.3;filter:grayscale(100%) brightness(.5)`
 			: ``;
+
+		if (Dex.species.get(id).num < 0) {
+			return `background:transparent url(/sprites/gen5/${Dex.species.get(id).spriteid}.png) no-repeat scroll center center;background-size:contain${fainted}`;
+		}
+
 		return `background:transparent url(${Dex.resourcePrefix}sprites/pokemonicons-sheet.png?v20) no-repeat scroll -${left}px -${top}px${fainted}`;
 	}
 
@@ -973,8 +1001,27 @@ export const Dex = new (class implements ModdedDex {
 				spriteid = species.spriteid || id;
 			}
 		}
-		if (species.exists === false)
+
+		console.log("TEAMBUILDER SPRITE CHECK", {
+			pokemon: pokemon,
+			id: id,
+			spriteid: spriteid,
+			speciesExists: species.exists,
+		});
+
+		if (species.num < 0) {
+			return {
+				spriteDir: "sprites/gen5",
+				spriteid: spriteid,
+				x: 8,
+				y: 10,
+				h: 96,
+			};
+		}
+
+		if (species.exists === false) {
 			return { spriteDir: "sprites/gen5", spriteid: "0", x: 10, y: 5 };
+		}
 		if (Dex.afdMode) {
 			return {
 				spriteid,
@@ -1079,7 +1126,11 @@ export const Dex = new (class implements ModdedDex {
 		const data = this.getTeambuilderSpriteData(pokemon, dex);
 		const shiny = data.shiny ? "-shiny" : "";
 		const resize = data.h ? `background-size:${data.h}px` : "";
-		return `background-image:url(${Dex.resourcePrefix}${data.spriteDir}${shiny}/${data.spriteid}.png);background-position:${data.x + xOffset}px ${data.y + yOffset}px;background-repeat:no-repeat;${resize}`;
+		let prefix = Dex.resourcePrefix;
+		if (Dex.species.get(data.spriteid).num < 0) {
+			prefix = "/"; // Serve from our own custom client rather than production CDN
+		}
+		return `background-image:url(${prefix}${data.spriteDir}${shiny}/${data.spriteid}.png);background-position:${data.x + xOffset}px ${data.y + yOffset}px;background-repeat:no-repeat;${resize}`;
 	}
 
 	getItemIcon(item: any) {

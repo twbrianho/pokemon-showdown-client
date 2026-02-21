@@ -551,7 +551,15 @@ function toId() {
 				) {
 					// Custom domain -> CORS blocks Smogon login server. Bypass auto-login.
 					self.loaded = true;
-					app.topbar.updateUserbar();
+					try {
+						var savedName = localStorage.getItem(
+							"showdown_custom_username",
+						);
+						if (savedName) {
+							self.rename(savedName);
+						}
+					} catch (e) {}
+					if (app.topbar) app.topbar.updateUserbar();
 					return;
 				}
 
@@ -587,6 +595,9 @@ function toId() {
 		 * Log out from the server (but remain connected as a guest).
 		 */
 		logout: function () {
+			try {
+				localStorage.removeItem("showdown_custom_username");
+			} catch (e) {}
 			$.post(this.getActionPHP(), {
 				act: "logout",
 				userid: this.get("userid"),
@@ -600,14 +611,16 @@ function toId() {
 			app.socket.close();
 		},
 		setPersistentName: function (name) {
+			var savedName = name !== undefined ? name : this.get("name");
+			try {
+				if (savedName) {
+					localStorage.setItem("showdown_custom_username", savedName);
+				}
+			} catch (e) {}
 			if (location.host !== Config.routes.client) return;
-			$.cookie(
-				"showdown_username",
-				name !== undefined ? name : this.get("name"),
-				{
-					expires: 14,
-				},
-			);
+			$.cookie("showdown_username", savedName, {
+				expires: 14,
+			});
 		},
 	}));
 
