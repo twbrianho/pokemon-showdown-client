@@ -53,11 +53,13 @@ Place your images into the local `play.pokemonshowdown.com/sprites/` folders usi
 
 ## 3. Compile the Client
 
-You must rebuild the client's data bundles so it can detect your new sprites (computing their dimensions automatically) and index your Fakemon into the Binary Search cache.
+You must rebuild the client's data bundles so it can detect your new sprites (computing their dimensions automatically) and index your Fakemon into the Binary Search cache. Because the UI reads from the `dist/` JS files, you have to compile your `.ts` changes into JavaScript first.
 
-1. Open a terminal in the `pokemon-showdown-client` root directory.
-2. Run the command: `node build full`
-3. Notice in the console output that it says `Updating animated sprite dimensions... DONE` and `Building search-index.js... DONE`.
+1. Open a terminal in the `pokemon-showdown-client/caches/pokemon-showdown` directory.
+2. Run the command: `npm run build`. This converts your Typescript additions into standard Javascript in the `dist` folder.
+3. Switch back to the `pokemon-showdown-client` root directory.
+4. Run the command: `node build full`
+5. Notice in the console output that it says `Updating animated sprite dimensions... DONE` and `Building search-index.js... DONE`.
 
 ## 4. Test & Deploy
 

@@ -1139,6 +1139,11 @@ export const Dex = new (class implements ModdedDex {
 			item = window.BattleItems[toID(item)];
 		if (item?.spritenum) num = item.spritenum;
 
+		if (item?.num < 0) {
+			let id = item.id || toID(item.name || item);
+			return `background:transparent url(/sprites/itemicons/${id}.png) no-repeat scroll center center;background-size:contain`;
+		}
+
 		let top = Math.floor(num / 16) * 24;
 		let left = (num % 16) * 24;
 		return `background:transparent url(${Dex.resourcePrefix}sprites/itemicons-sheet.png?v1) no-repeat scroll -${left}px -${top}px`;

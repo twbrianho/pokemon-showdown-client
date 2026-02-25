@@ -952,7 +952,11 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 			if (item.gen > genNum) {
 				continue;
 			}
-			if (item.isNonstandard && !isMetBattle) {
+			if (
+				item.isNonstandard &&
+				!["Custom", "CAP"].includes(item.isNonstandard) &&
+				!isMetBattle
+			) {
 				if (isNatDex) {
 					let curItem = item;
 					let curGen = genNum;
