@@ -825,14 +825,17 @@ abstract class BattleTypedSearch<T extends SearchType> {
 		if (
 			format.includes("nationaldex") ||
 			format.startsWith("nd") ||
-			format.includes("natdex")
+			format.includes("natdex") ||
+			format.startsWith("pokednd")
 		) {
 			format = (
-				format.startsWith("nd")
-					? format.slice(2)
-					: format.includes("natdex")
-						? format.slice(6)
-						: format.slice(11)
+				format.startsWith("pokednd")
+					? format.slice(7)
+					: format.startsWith("nd")
+						? format.slice(2)
+						: format.includes("natdex")
+							? format.slice(6)
+							: format.slice(11)
 			) as ID;
 			this.formatType = "natdex";
 			if (!format) format = "ou" as ID;
@@ -1432,7 +1435,9 @@ class BattlePokemonSearch extends BattleTypedSearch<"pokemon"> {
 		} else if (
 			format === "anythinggoes" ||
 			format.endsWith("ag") ||
-			format.startsWith("ag")
+			format.startsWith("ag") ||
+			format === "standard" ||
+			format === "doubles"
 		) {
 			tierSet = tierSet.slice(slices.AG);
 		} else if (isHackmons && (dex.gen < 9 || this.formatType === "natdex")) {
