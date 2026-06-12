@@ -439,7 +439,7 @@
 		},
 		getMusicVolume: function () {
 			var volume = Dex.prefs('musicvolume');
-			return typeof volume === 'number' ? volume : 50;
+			return typeof volume === 'number' ? volume : 0;
 		},
 		setNotifVolume: function (volume) {
 			Storage.prefs('notifvolume', volume);

@@ -485,6 +485,9 @@ Storage.initPrefs = function () {
 			})
 			.catch(function (err) {
 				console.error("Import failed:", err);
+				Storage.whenAppLoaded(function (app) {
+					app.addPopupMessage("Team import failed: " + err.message);
+				});
 			});
 	}
 

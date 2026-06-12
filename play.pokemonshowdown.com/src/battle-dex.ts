@@ -62,12 +62,12 @@ export declare namespace Dex {
 	export type IMMUNE = 3;
 	export type WeaknessType = REGULAR | WEAK | RESIST | IMMUNE;
 	export type StatsTable = {
-		hp: number;
-		atk: number;
-		def: number;
-		spa: number;
-		spd: number;
-		spe: number;
+		hp: number,
+		atk: number,
+		def: number,
+		spa: number,
+		spd: number,
+		spe: number,
 	};
 	export type PokemonSet = Teams.PokemonSet;
 }
@@ -203,7 +203,7 @@ export function toName(name: any) {
 	// remove zalgo
 	name = name.replace(
 		/[\u0300-\u036f\u0483-\u0489\u0610-\u0615\u064B-\u065F\u0670\u06D6-\u06DC\u06DF-\u06ED\u0E31\u0E34-\u0E3A\u0E47-\u0E4E]{3,}/g,
-		"",
+		""
 	);
 	name = name.replace(/[\u239b-\u23b9]/g, "");
 
@@ -268,9 +268,9 @@ export const Dex = new (class implements ModdedDex {
 	resourcePrefix = (() => {
 		let prefix = "";
 		if (window.document?.location?.protocol !== "http:") prefix = "https:";
-		let clientRoute = window.Config
-			? Config.routes.client
-			: "play.pokemonshowdown.com";
+		let clientRoute = window.Config ?
+			Config.routes.client :
+			"play.pokemonshowdown.com";
 		if (clientRoute === "pokemon-dnd-client.brianslho.info")
 			clientRoute = "play.pokemonshowdown.com";
 		return `${prefix}//${clientRoute}/`;
@@ -376,10 +376,10 @@ export const Dex = new (class implements ModdedDex {
 	}
 
 	prefs(prop: string) {
-		// @ts-expect-error this is what I get for calling it Storage...
-		return window.Storage?.prefs
-			? window.Storage.prefs(prop)
-			: window.PS?.prefs?.[prop];
+		const Storage = (window as any).Storage;
+		return Storage?.prefs ?
+			Storage.prefs(prop) :
+			window.PS?.prefs?.[prop];
 	}
 
 	getShortName(name: string) {
@@ -394,7 +394,7 @@ export const Dex = new (class implements ModdedDex {
 	}
 
 	getEffect(
-		name: string | null | undefined,
+		name: string | null | undefined
 	): PureEffect | Item | Ability | Move {
 		name = (name || "").trim();
 		if (name.substr(0, 5) === "item:") {
@@ -461,9 +461,9 @@ export const Dex = new (class implements ModdedDex {
 			"Psychic",
 			"Dark",
 			"Dragon",
-		].includes(type)
-			? "Special"
-			: "Physical";
+		].includes(type) ?
+			"Special" :
+			"Physical";
 	}
 
 	items = {
@@ -557,7 +557,7 @@ export const Dex = new (class implements ModdedDex {
 				}
 				data.nfe =
 					data.id === "dipplin" ||
-					!!(data as Species).evos?.some((evo) => {
+					!!(data as Species).evos?.some(evo => {
 						const evoSpecies = this.species.get(evo);
 						return (
 							!evoSpecies.isNonstandard ||
@@ -621,7 +621,7 @@ export const Dex = new (class implements ModdedDex {
 			if (this.types.namesCache) return this.types.namesCache;
 			const names = this.types
 				.all()
-				.map((type) => type.name as Dex.TypeName);
+				.map(type => type.name as Dex.TypeName);
 			names.splice(names.indexOf("Stellar"), 1);
 			if (names.length) this.types.namesCache = names;
 			return names;
@@ -657,14 +657,14 @@ export const Dex = new (class implements ModdedDex {
 		pokemon: Pokemon | Species | string,
 		isFront: boolean,
 		options: {
-			gen?: number;
-			shiny?: boolean;
-			gender?: Dex.GenderName;
-			afd?: boolean;
-			noScale?: boolean;
-			mod?: string;
-			dynamax?: boolean;
-		} = { gen: 6 },
+			gen?: number,
+			shiny?: boolean,
+			gender?: Dex.GenderName,
+			afd?: boolean,
+			noScale?: boolean,
+			mod?: string,
+			dynamax?: boolean,
+		} = { gen: 6 }
 	) {
 		const mechanicsGen = options.gen || 6;
 		let isDynamax = !!options.dynamax;
@@ -947,7 +947,7 @@ export const Dex = new (class implements ModdedDex {
 
 	getPokemonIcon(
 		pokemon: string | Pokemon | ServerPokemon | Dex.PokemonSet | null,
-		facingLeft?: boolean,
+		facingLeft?: boolean
 	) {
 		if (pokemon === "pokeball") {
 			return `background:transparent url(${Dex.resourcePrefix}sprites/pokemonicons-pokeball-sheet.png) no-repeat scroll -0px 4px`;
@@ -974,9 +974,9 @@ export const Dex = new (class implements ModdedDex {
 
 		let top = Math.floor(num / 12) * 30;
 		let left = (num % 12) * 40;
-		let fainted = (pokemon as Pokemon | ServerPokemon)?.fainted
-			? `;opacity:.3;filter:grayscale(100%) brightness(.5)`
-			: ``;
+		let fainted = (pokemon as Pokemon | ServerPokemon)?.fainted ?
+			`;opacity:.3;filter:grayscale(100%) brightness(.5)` :
+			``;
 
 		if (Dex.species.get(id).num < 0) {
 			return `background:transparent url(/sprites/gen5/${Dex.species.get(id).spriteid}.png) no-repeat scroll center center;background-size:contain${fainted}`;
@@ -987,7 +987,7 @@ export const Dex = new (class implements ModdedDex {
 
 	getTeambuilderSpriteData(
 		pokemon: any,
-		dex: ModdedDex = Dex,
+		dex: ModdedDex = Dex
 	): TeambuilderSpriteData {
 		let gen = dex.gen;
 		let id = toID(pokemon.species || pokemon);
@@ -1003,16 +1003,16 @@ export const Dex = new (class implements ModdedDex {
 		}
 
 		console.log("TEAMBUILDER SPRITE CHECK", {
-			pokemon: pokemon,
-			id: id,
-			spriteid: spriteid,
+			pokemon,
+			id,
+			spriteid,
 			speciesExists: species.exists,
 		});
 
 		if (species.num < 0) {
 			return {
 				spriteDir: "sprites/gen5",
-				spriteid: spriteid,
+				spriteid,
 				x: 8,
 				y: 10,
 				h: 96,
@@ -1046,17 +1046,17 @@ export const Dex = new (class implements ModdedDex {
 			(!species.isNonstandard ||
 				!["CAP", "Custom"].includes(species.isNonstandard) ||
 				species.id === "xerneasneutral") &&
-			![
-				"floetteeternal",
-				"pichuspikyeared",
-				"pikachubelle",
-				"pikachucosplay",
-				"pikachulibre",
-				"pikachuphd",
-				"pikachupopstar",
-				"pikachurockstar",
-			].includes(species.id) &&
-			!(species.isMega && species.gen === 9);
+				![
+					"floetteeternal",
+					"pichuspikyeared",
+					"pikachubelle",
+					"pikachucosplay",
+					"pikachulibre",
+					"pikachuphd",
+					"pikachupopstar",
+					"pikachurockstar",
+				].includes(species.id) &&
+				!(species.isMega && species.gen === 9);
 		if (gen >= 8 && homeExists) {
 			spriteData.spriteDir = "sprites/home-centered";
 			spriteData.x = 8;
@@ -1120,7 +1120,7 @@ export const Dex = new (class implements ModdedDex {
 		pokemon: any,
 		dex?: ModdedDex,
 		xOffset = 0,
-		yOffset = 0,
+		yOffset = 0
 	) {
 		if (!pokemon) return "";
 		const data = this.getTeambuilderSpriteData(pokemon, dex);
@@ -1161,15 +1161,15 @@ export const Dex = new (class implements ModdedDex {
 		const categoryID = toID(category);
 		let sanitizedCategory = "";
 		switch (categoryID) {
-			case "physical":
-			case "special":
-			case "status":
-				sanitizedCategory =
+		case "physical":
+		case "special":
+		case "status":
+			sanitizedCategory =
 					categoryID.charAt(0).toUpperCase() + categoryID.slice(1);
-				break;
-			default:
-				sanitizedCategory = "undefined";
-				break;
+			break;
+		default:
+			sanitizedCategory = "undefined";
+			break;
 		}
 		return `<img src="${Dex.resourcePrefix}sprites/categories/${sanitizedCategory}.png" alt="${sanitizedCategory}" height="14" width="32" class="pixelated" />`;
 	}
@@ -1337,7 +1337,7 @@ export class ModdedDex {
 			if (data.gen > this.gen) data.tier = "Illegal";
 			data.nfe =
 				data.id === "dipplin" ||
-				!!data.evos?.some((evo) => {
+				!!data.evos?.some(evo => {
 					const evoSpecies = this.species.get(evo);
 					return (
 						!evoSpecies.isNonstandard ||

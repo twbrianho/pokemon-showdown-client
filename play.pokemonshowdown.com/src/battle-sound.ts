@@ -86,7 +86,7 @@ export class BattleBGM {
 			() => {
 				this.updateTime();
 			},
-			Math.max(this.loopend - progress, 1),
+			Math.max(this.loopend - progress, 1)
 		);
 	}
 
@@ -111,16 +111,16 @@ export const BattleSound = new (class {
 
 	// options
 	effectVolume = 50;
-	bgmVolume = 50;
+	bgmVolume = 0;
 	muted = false;
 
 	getSound(url: string) {
 		if (!window.HTMLAudioElement) return;
 		if (this.soundCache[url]) return this.soundCache[url];
 		try {
-			let clientRoute = window.Config
-				? Config.routes.client
-				: "play.pokemonshowdown.com";
+			let clientRoute = window.Config ?
+				Config.routes.client :
+				"play.pokemonshowdown.com";
 			if (clientRoute === "pokemon-dnd-client.brianslho.info")
 				clientRoute = "play.pokemonshowdown.com";
 			const sound = document.createElement("audio");
@@ -149,7 +149,7 @@ export const BattleSound = new (class {
 		url: string,
 		loopstart: number,
 		loopend: number,
-		replaceBGM?: BattleBGM | null,
+		replaceBGM?: BattleBGM | null
 	) {
 		if (replaceBGM) {
 			replaceBGM.stop();
@@ -196,7 +196,7 @@ export const BattleSound = new (class {
 })();
 
 if (typeof PS === "object") {
-	PS.prefs.subscribeAndRun((key) => {
+	PS.prefs.subscribeAndRun(key => {
 		if (
 			!key ||
 			key === "musicvolume" ||
