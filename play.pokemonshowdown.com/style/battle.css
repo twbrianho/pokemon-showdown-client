@@ -362,9 +362,11 @@ License: GPLv2
 	-ms-transform: scaleX(-1);
 	transform: scaleX(-1);
 }
-.trainer .trainersprite {
+.trainersprite {
 	max-width: 80px;
 	max-height: 80px;
+}
+.trainer .trainersprite {
 	background-size: contain;
 }
 .turn {

@@ -760,9 +760,28 @@
 				buf += '<button name="setAvatar" value="' + i + '" style="background-position:' + offset + '" class="option pixelated' + (i === cur ? ' cur' : '') + '" title="/avatar ' + i + '"></button>';
 			}
 			buf += '</div><div style="clear:left"></div>';
+			buf += '<hr />';
+			buf += '<form class="customavatar-form" style="margin-top:10px">';
+			buf += '<label><strong>Use a custom avatar: </strong>';
+			buf += '<input type="text" class="textbox" name="customavatar" placeholder="e.g. gavi.png" style="width:150px; margin-right:5px; vertical-align:middle" />';
+			buf += '</label>';
+			buf += '<button type="submit" class="button">Set Avatar</button>';
+			buf += '</form>';
 
 			buf += '<p><button name="close" class="button">Cancel</button></p>';
 			this.$el.html(buf).css('max-width', 780);
+
+			var self = this;
+			this.$el.find('.customavatar-form').on('submit', function (e) {
+				e.preventDefault();
+				var avatar = self.$('input[name="customavatar"]').val();
+				if (avatar) {
+					app.send('/avatar ' + avatar);
+					app.send('/cmd userdetails ' + app.user.get('userid'));
+					Storage.prefs('avatar', avatar);
+					self.close();
+				}
+			});
 		},
 		setAvatar: function (avatar) {
 			// Replace avatar number with name before sending it to the server, only the client knows what to do with the numbers

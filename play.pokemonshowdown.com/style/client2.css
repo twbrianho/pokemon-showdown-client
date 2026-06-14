@@ -2196,6 +2196,8 @@ pre.textbox.textbox-empty[placeholder]:before {
 .userdetails img {
 	float: left;
 	margin-left: -85px;
+	width: 80px;
+	height: 80px;
 }
 .userdetails .rooms {
 	font-size: 8pt;

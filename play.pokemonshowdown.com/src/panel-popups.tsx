@@ -965,6 +965,15 @@ class AvatarsPanel extends PSRoomPanel {
 	static readonly routes = ['avatars'];
 	static readonly location = 'semimodal-popup';
 
+	submitCustomAvatar = (ev: Event) => {
+		ev.preventDefault();
+		const input = this.base!.querySelector<HTMLInputElement>('input[name=customavatar]');
+		if (input && input.value) {
+			PS.send(`/avatar ${input.value}`);
+			this.close();
+		}
+	};
+
 	override render() {
 		const room = this.props.room;
 
@@ -988,6 +997,17 @@ class AvatarsPanel extends PSRoomPanel {
 				))}
 			</div>
 			<div style="clear:left"></div>
+			<hr />
+			<form onSubmit={this.submitCustomAvatar} style={{ marginTop: '10px' }}>
+				<label>
+					<strong>Use a custom avatar: </strong>
+					<input
+						type="text" class="textbox" name="customavatar" placeholder="e.g., gavi.png"
+						style={{ width: '150px', marginRight: '5px', verticalAlign: 'middle' }}
+					/>
+				</label>
+				<button type="submit" class="button">Set Avatar</button>
+			</form>
 			<p><button class="button" data-cmd="/close">Cancel</button></p>
 		</div></PSPanelWrapper>;
 	}
