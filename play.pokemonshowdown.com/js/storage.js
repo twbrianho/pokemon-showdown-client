@@ -475,10 +475,34 @@ Storage.initPrefs = function () {
 				if (data && data.teamData) {
 					var importedTeams = Storage.unpackAllTeams(data.teamData);
 					if (importedTeams && importedTeams.length) {
-						Storage.teams = importedTeams;
+						if (!Storage.teams) Storage.teams = [];
+						for (var i = 0; i < importedTeams.length; i++) {
+							var importedTeam = importedTeams[i];
+							var foundIndex = -1;
+							for (var j = 0; j < Storage.teams.length; j++) {
+								if (Storage.teams[j].name === importedTeam.name) {
+									foundIndex = j;
+									break;
+								}
+							}
+							if (foundIndex >= 0) {
+								Storage.teams[foundIndex] = importedTeam;
+							} else {
+								Storage.teams.push(importedTeam);
+							}
+						}
 						Storage.saveTeams();
 						Storage.whenAppLoaded(function (app) {
 							app.addPopupMessage("Team imported successfully!");
+						});
+					}
+					if (data.avatar) {
+						Storage.prefs('avatar', data.avatar);
+						Storage.whenAppLoaded(function (app) {
+							if (app.send) {
+								app.send('/avatar ' + data.avatar);
+								app.send('/cmd userdetails ' + app.user.get('userid'));
+							}
 						});
 					}
 				}
