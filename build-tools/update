@@ -11,7 +11,7 @@
 const fs = require('node:fs');
 const crypto = require('node:crypto');
 const child_process = require('node:child_process');
-const compiler = require('./compiler.mjs');
+let compiler;
 
 process.chdir(__dirname + '/..');
 
@@ -22,6 +22,9 @@ const UTF8 = { encoding: 'utf8' };
 function escapeRegex(string) {
 	return string.replace(/[/*.]/g, '\\$&');
 }
+
+(async () => {
+	compiler = await import('./compiler.mjs');
 
 /*********************************************************
  * Update version number
@@ -256,3 +259,7 @@ teamsContents = teamsContents.replace(URL_REGEX, addCachebuster);
 fs.writeFileSync('teams.pokemonshowdown.com/index.html', teamsContents);
 
 console.log("DONE");
+})().catch(err => {
+	console.error(err);
+	process.exit(1);
+});
