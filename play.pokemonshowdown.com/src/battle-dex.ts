@@ -720,8 +720,9 @@ export const Dex = new class implements ModdedDex {
 			}
 		}
 		if (species.isMega && species.gen === 9) {
-			dir = 'ani' + dir;
-			spriteData.url += dir + '/' + name + '.gif';
+			let animDir = 'ani';
+			if (options.shiny && mechanicsGen > 1) animDir += '-shiny';
+			spriteData.url += animDir + '/' + name + '.gif';
 			animatedSprite = true;
 		}
 		if (!animatedSprite) {
