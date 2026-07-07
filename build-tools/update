@@ -243,10 +243,12 @@ try {
 } catch {}
 
 fs.writeFileSync('play.pokemonshowdown.com/caches/index-old.html', indexContents);
+fs.writeFileSync('play.pokemonshowdown.com/index.html', indexContents);
 if (indexContents2) {
 	fs.writeFileSync('play.pokemonshowdown.com/caches/index-test.html', indexContents2);
 }
 fs.writeFileSync('play.pokemonshowdown.com/caches/index-new.html', preactIndexContents);
+fs.writeFileSync('play.pokemonshowdown.com/preactalpha.html', preactIndexContents);
 fs.writeFileSync('play.pokemonshowdown.com/caches/crossprotocol.html', crossprotocolContents);
 fs.writeFileSync('play.pokemonshowdown.com/js/replay-embed.js', replayEmbedContents);
 
