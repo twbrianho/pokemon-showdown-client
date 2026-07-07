@@ -758,6 +758,10 @@ export const Dex = new class implements ModdedDex {
 			spriteData.y += -11;
 		}
 
+		if (species.num < 0) {
+			spriteData.url = spriteData.url.replace(Dex.resourcePrefix, '/');
+		}
+
 		return spriteData;
 	}
 
