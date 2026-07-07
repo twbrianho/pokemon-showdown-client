@@ -719,6 +719,11 @@ export const Dex = new class implements ModdedDex {
 				break;
 			}
 		}
+		if (species.isMega && species.gen === 9) {
+			dir = 'ani' + dir;
+			spriteData.url += dir + '/' + name + '.gif';
+			animatedSprite = true;
+		}
 		if (!animatedSprite) {
 			// There is no entry or enough data in pokedex-mini.js
 			// Handle these in case-by-case basis; either using BW sprites or matching the played gen.
@@ -851,6 +856,16 @@ export const Dex = new class implements ModdedDex {
 			};
 		}
 		if (species.exists === false) return { spriteDir: 'sprites/gen5', spriteid: '0', x: 10, y: 5, pixelated: true };
+		if (species.isMega && species.gen === 9) {
+			return {
+				spriteid,
+				spriteDir: 'sprites/ani',
+				shiny: !!pokemon.shiny,
+				x: 10,
+				y: 5,
+				pixelated: false,
+			};
+		}
 		if (Dex.afdMode) {
 			return {
 				spriteid,
@@ -922,7 +937,8 @@ export const Dex = new class implements ModdedDex {
 		if (Dex.species.get(data.spriteid).num < 0) {
 			prefix = "/"; // Serve from our own custom client rather than production CDN
 		}
-		return `background-image:url(${prefix}${data.spriteDir}${shiny}/${data.spriteid}.png);background-position:${data.x + xOffset}px ${data.y + yOffset}px;background-repeat:no-repeat;${resize}`;
+		const ext = data.spriteDir.endsWith('ani') ? '.gif' : '.png';
+		return `background-image:url(${prefix}${data.spriteDir}${shiny}/${data.spriteid}${ext});background-position:${data.x + xOffset}px ${data.y + yOffset}px;background-repeat:no-repeat;${resize}`;
 	}
 
 	getItemIcon(item: any) {
