@@ -62,9 +62,16 @@ export class PSTeambuilder {
 
 				line = line.slice(3, -3).trim();
 				[curTeam.format, line] = this.splitPrefix(line, ']', 1) as [ID, string];
-				if (!curTeam.format) curTeam.format = 'gen8' as ID;
-				else if (!curTeam.format.startsWith('gen')) curTeam.format = `gen6${curTeam.format}` as ID;
+				if (!curTeam.format) {
+					curTeam.format = 'gen8' as ID;
+				} else if (curTeam.format.endsWith('-box')) {
+					curTeam.format = curTeam.format.slice(0, -4) as ID;
+					curTeam.isBox = true;
+				}
+				if (curTeam.format.startsWith('[')) curTeam.format = curTeam.format.slice(1) as ID;
+				if (!curTeam.format.startsWith('gen')) curTeam.format = `gen6${curTeam.format}` as ID;
 
+				line = line.trim();
 				[curTeam.folder, curTeam.name] = this.splitPrefix(line, '/');
 			} else if (line.includes('|')) {
 				if (curTeam) {
@@ -184,7 +191,7 @@ export function TeamBox(props: {
 class TeamDropdownPanel extends PSRoomPanel {
 	static readonly id = 'teamdropdown';
 	static readonly routes = ['teamdropdown'];
-	static readonly location = 'semimodal-popup';
+	static readonly location = 'modal-popup';
 	static readonly noURL = true;
 	gen = '';
 	format: string | null = null;
@@ -222,7 +229,14 @@ class TeamDropdownPanel extends PSRoomPanel {
 		const room = this.props.room;
 		if (!room.parentElem) {
 			return <PSPanelWrapper room={room}>
-				<p>Error: You tried to open a team selector, but you have nothing to select a team for.</p>
+				<div class="pad">
+					<p>This team selector is no longer available (the challenge was cancelled or something).</p>
+					<p class="buttonbar">
+						<button type="button" data-cmd="/close" class="button">
+							Close
+						</button>
+					</p>
+				</div>
 			</PSPanelWrapper>;
 		}
 		const baseFormat = room.parentElem.getAttribute('data-format') || Dex.modid;
@@ -340,8 +354,12 @@ export interface FormatData {
 	searchShow?: boolean;
 	challengeShow?: boolean;
 	tournamentShow?: boolean;
+	bestOfDefault?: boolean;
+	teraPreviewDefault?: boolean;
+	itemClauseDefault?: boolean;
 	rated: boolean;
 	teambuilderLevel?: number | null;
+	partner?: boolean;
 	teambuilderFormat?: ID;
 	battleFormat?: string;
 	isTeambuilderFormat: boolean;
@@ -354,7 +372,7 @@ export type SelectType = 'teambuilder' | 'challenge' | 'search' | 'tournament';
 class FormatDropdownPanel extends PSRoomPanel {
 	static readonly id = 'formatdropdown';
 	static readonly routes = ['formatdropdown'];
-	static readonly location = 'semimodal-popup';
+	static readonly location = 'modal-popup';
 	static readonly noURL = true;
 	gen = '' as ID;
 	format: string | null = null;
@@ -386,7 +404,14 @@ class FormatDropdownPanel extends PSRoomPanel {
 		const room = this.props.room;
 		if (!room.parentElem) {
 			return <PSPanelWrapper room={room}>
-				<p>Error: You tried to open a format selector, but you have nothing to select a format for.</p>
+				<div class="pad">
+					<p>This format selector is no longer available.</p>
+					<p class="buttonbar">
+						<button type="button" data-cmd="/close" class="button">
+							Close
+						</button>
+					</p>
+				</div>
 			</PSPanelWrapper>;
 		}
 

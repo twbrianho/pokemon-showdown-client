@@ -14,7 +14,7 @@ if (preg_match('/^([a-z0-9-_\.]*?)\.psim\.us$/', $host, $m)) {
 	die; // not authorised
 }
 
-$protocol = @$_REQUEST['protocol'] ?? 'http:';
+$protocol = @$_REQUEST['protocol'] === 'https:' ? 'https:' : 'http:';
 $portType = ($protocol === 'http:' ? 'port' : 'httpsport');
 
 if ($config['host'] !== 'showdown') {
@@ -127,6 +127,7 @@ function postReply (message) {
 function messageHandler(e) {
 	if (e.origin !== yourOrigin) return;
 	var data = e.data;
+	if (typeof data !== 'string') return; // we don't do this but external code can
 	// console.log('recv: ' + data);
 
 	// data's first char:
